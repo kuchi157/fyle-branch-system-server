@@ -12,6 +12,8 @@ const PORT=process.env.PORT || 80;
 //Autocomplete API to return possible matches based on the branch name ordered by IFSC code (ascending order) with limit and offset.
 //Endpoint: /api/branches/autocomplete?q=<>
 //Example: /api/branches/autocomplete?q=RTGS&limit=3&offset=0
+//Deploy link: https://fyle-branch-system-server.herokuapp.com/api/branches/autocomplete?q=RTGS
+
 
 app.get('/api/branches/autocomplete',async(req,res)=>{
 
@@ -20,7 +22,7 @@ app.get('/api/branches/autocomplete',async(req,res)=>{
   }
  
   try{
-    const allBranches= await pool.query(`SELECT * FROM branches WHERE branch LIKE $1 || '%' ORDER BY ifsc ASC OFFSET $2 LIMIT $3`,[req.query.q, req.query.offset, req.query.limit]);
+    const allBranches= await pool.query(`SELECT * FROM branches WHERE branch LIKE $1 || '%' ORDER BY ifsc ASC OFFSET $2 LIMIT $3`,[req.query.q.toUpperCase(), req.query.offset, req.query.limit]);
     if(allBranches.rows.length===0){
       return res.send('No branch in the city');
     }
@@ -37,6 +39,7 @@ app.get('/api/branches/autocomplete',async(req,res)=>{
 //Search API to return possible matches across all columns and all rows, ordered by IFSC code (ascending order) with limit and offset.
 //Endpoint: /api/branches?q=<>
 //Example: /api/branches?q=BANGALORE&limit=4&offset=0
+//Deploy link: https://fyle-branch-system-server.herokuapp.com/api/branches?q=BANGALORE
 
 app.get('/api/branches',async(req,res)=>{
   if(!req.query.q){
@@ -44,7 +47,7 @@ app.get('/api/branches',async(req,res)=>{
   }
  
   try{
-    const allBranches= await pool.query(`SELECT * FROM branches WHERE city = $1 ORDER BY ifsc ASC OFFSET $2 LIMIT $3`,[req.query.q, req.query.offset, req.query.limit]);
+    const allBranches= await pool.query(`SELECT * FROM branches WHERE city = $1 ORDER BY ifsc ASC OFFSET $2 LIMIT $3`,[req.query.q.toUpperCase(), req.query.offset, req.query.limit]);
     if(allBranches.rows.length===0){
       return res.send('No branch in the city');
     }
